@@ -1,0 +1,14 @@
+
+.ScrollContainer{
+    height: 100%;
+    width: 100%;
+    display: grid;
+    position: relative;
+    display: inline-block;
+}
+.ScrollViewer{
+    height: 100%;
+    width: 100%;
+    position:absolute;
+    overflow-y: auto;
+}

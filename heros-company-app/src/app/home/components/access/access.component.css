@@ -1,0 +1,41 @@
+:host{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.AccessContainer{
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--app-primary-medium);
+    padding: 30px;
+    border-radius: 15px;
+
+}
+.Redirector{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 70px;
+}
+.ButtonContainer{
+    padding:5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+h2{
+    text-align: center;
+}
+
+label{
+    font-size: 26px;
+    padding:20px;
+    text-align: center;
+}
+label , button{
+    align-self: center;
+}
