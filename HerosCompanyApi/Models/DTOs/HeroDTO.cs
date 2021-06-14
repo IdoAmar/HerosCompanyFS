@@ -14,5 +14,5 @@ namespace HerosCompanyApi.Models.DTOs
         double StartingPower,
         double CurrentPower,
         DateTime? LastTimeTrained,
-        ICollection<Trainer> Trainers);
+        bool Trainable);
 }

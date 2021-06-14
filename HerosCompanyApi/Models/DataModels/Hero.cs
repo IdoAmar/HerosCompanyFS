@@ -10,7 +10,7 @@ namespace HerosCompanyApi.Models.DataModels
         public Guid HeroId { get; set; }
         public string Name { get; set; }
         public string Ability { get; set; }
-        public DateTime? StartedAt { get; set; }
+        public DateTime StartedAt { get; set; }
         public string SuitColors { get; set; }
         public double StartingPower { get; set; }
         public double CurrentPower { get; set; }

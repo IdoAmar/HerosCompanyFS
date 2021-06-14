@@ -56,10 +56,12 @@ namespace HerosCompanyApi.Controllers
             var entry =_dbContext.Trainers.Add(newTrainer);
             await _dbContext.SaveChangesAsync();
 
-            string token = _accessTokenGenerator.GenerateToken(newTrainer);
+            var trainerDTO = TrainerToDTO(newTrainer);
+
+            string token = _accessTokenGenerator.GenerateToken(trainerDTO);
             HttpContext.Response.Headers.Add("Authorization", "Bearer " + token);
 
-            return Ok(TrainerToDTO(newTrainer));
+            return Ok(trainerDTO);
         }
 
         [AllowAnonymous]
@@ -84,20 +86,24 @@ namespace HerosCompanyApi.Controllers
                 return Unauthorized();
             }
 
-            string token = _accessTokenGenerator.GenerateToken(existingTrainer);
+            var trainerDTO = TrainerToDTO(existingTrainer);
+
+            string token = _accessTokenGenerator.GenerateToken(trainerDTO);
             HttpContext.Response.Headers.Add("Authorization", "Bearer " + token);
 
-            return Ok(TrainerToDTO(existingTrainer));
+            return Ok(trainerDTO);
         }
 
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
-            return Ok();
+            
+            return Ok(_accessTokenGenerator.ReadToken(HttpContext.User));
         }
 
         private TrainerDTO TrainerToDTO(Trainer trainer)
         {
+          
             return new TrainerDTO(trainer.TrainerId, trainer.TrainerUserName);
         }
     }

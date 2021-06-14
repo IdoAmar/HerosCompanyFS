@@ -22,7 +22,8 @@ namespace HerosCompanyApi.Configurations
             builder.Property(h => h.Ability)
                 .IsRequired();
 
-            builder.Property(h => h.StartedAt);
+            builder.Property(h => h.StartedAt)
+                .IsRequired();
 
             builder.Property(h => h.SuitColors)
                 .IsRequired();
