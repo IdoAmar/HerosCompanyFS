@@ -29,14 +29,13 @@ namespace HerosCompanyApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddDbContext<HerosCompanyDBContext>(o =>
             {
                 string connectionString = _configuration.GetConnectionString(_connectionStringName);
                 o.UseSqlServer(connectionString);
             });
 
-            
+
 
             AuthenticationConfigurations authenticationConfigurations = new AuthenticationConfigurations();
             _configuration.Bind("Authentication", authenticationConfigurations);
@@ -69,10 +68,16 @@ namespace HerosCompanyApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
+            //cors for developing
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Authorization"));
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

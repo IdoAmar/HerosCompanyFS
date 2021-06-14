@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using HerosCompanyApi.Services.TokenGenerators;
 using HerosCompanyApi.Services.Encrypters;
 using HerosCompanyApi.Models.DTOs;
-
+using Microsoft.AspNetCore.Cors;
 
 namespace HerosCompanyApi.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class CredentialsController : ControllerBase
@@ -92,13 +92,6 @@ namespace HerosCompanyApi.Controllers
             HttpContext.Response.Headers.Add("Authorization", "Bearer " + token);
 
             return Ok(trainerDTO);
-        }
-
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-            
-            return Ok(_accessTokenGenerator.ReadToken(HttpContext.User));
         }
 
         private TrainerDTO TrainerToDTO(Trainer trainer)

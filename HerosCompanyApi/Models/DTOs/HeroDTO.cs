@@ -13,6 +13,5 @@ namespace HerosCompanyApi.Models.DTOs
         string SuitColors,
         double StartingPower,
         double CurrentPower,
-        DateTime? LastTimeTrained,
         bool Trainable);
 }

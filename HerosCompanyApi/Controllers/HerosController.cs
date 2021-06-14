@@ -147,7 +147,6 @@ namespace HerosCompanyApi.Controllers
                                hero.SuitColors,
                                hero.StartingPower,
                                hero.CurrentPower,
-                               hero.LastTimeTrained,
                                trainable);
         }
 

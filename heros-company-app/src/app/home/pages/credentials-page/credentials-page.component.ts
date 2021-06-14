@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CredentialsService } from 'src/app/core/services/credentials.service';
 
 @Component({
     selector: 'app-credentials-page',
@@ -15,7 +16,8 @@ export class CredentialsPageComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private router: Router
+        private router: Router,
+        private credentials: CredentialsService
     ) { }
 
     ngOnInit(): void {
@@ -32,7 +34,11 @@ export class CredentialsPageComponent implements OnInit {
         })
     }
     Submit(){
-        this.router.navigate(['/heros']);
+        const urlSnapshot = this.route.snapshot.url;
+        if(urlSnapshot[urlSnapshot.length-1].path === 'sign-up')
+        {
+            this.credentials.Register(this.credentialsForm.value.username,this.credentialsForm.value.password);
+        }
     }
 
 }
