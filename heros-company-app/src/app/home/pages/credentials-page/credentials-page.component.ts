@@ -21,7 +21,7 @@ export class CredentialsPageComponent implements OnInit {
     ngOnInit(): void {
         this.currentPage = this.route.snapshot.url[1].path;
         this.credentialsForm = new FormGroup({
-            "userName": new FormControl("", [
+            "username": new FormControl("", [
                 Validators.required,
             ]),
             "password": new FormControl("", [

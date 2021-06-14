@@ -7,6 +7,7 @@
 
     --app-accent:#debc76;
 
+    --app-warning:rgb(224, 71, 54);
 
     --app-main-foreground:rgb(235, 235, 235);
     --app-mid-foreground:rgb(156, 156, 156) ;
@@ -47,7 +48,7 @@ html, body{
     white-space: nowrap;
 }
 .AnimatedButton:hover:enabled{
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 .AnimatedButton:active:enabled{
     opacity: 0.9;
