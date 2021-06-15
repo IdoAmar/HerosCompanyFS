@@ -19,6 +19,9 @@
     /* box-shadow: -5px 1px 13px 10px black; */
 
 }
+.NotTrainable{
+    opacity: 0.75;
+}
 .Invisible{
     opacity: 0;
     transition:0.3s;

@@ -6,6 +6,7 @@
     --app-primary-low:#aaaaaa ;
 
     --app-accent:#debc76;
+    --app-accent-dark:#88795e;
 
     --app-warning:rgb(224, 71, 54);
 
@@ -55,7 +56,8 @@ html, body{
     transform: scale(1);
 }
 .AnimatedButton:disabled{
-    opacity: 0.5;
+    background-color: var(--app-accent-dark);
+    color: var(--app-mid-foreground)
 }
 
 /* input box styles */

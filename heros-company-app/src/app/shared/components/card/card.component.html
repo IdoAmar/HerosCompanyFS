@@ -1,4 +1,4 @@
-<button class="Card">
+<button class="Card" [ngClass]="heroDTO.trainable ? '':'NotTrainable'">
     <div class="CardContainer">
 
         <div class="ContentContainer">
@@ -7,7 +7,7 @@
             </p>
 
             <p class="Value Guid">
-                {{id}}
+                {{heroDTO.heroId}}
             <p>
         </div>
 
@@ -16,7 +16,7 @@
                 Name:
             </p>
             <p class="Value">
-                {{name}}
+                {{heroDTO.name}}
             </p>
         </div>
 
@@ -25,7 +25,7 @@
                 Current power:
             </p>
             <p class="Value">
-                {{currentPower}}
+                {{heroDTO.currentPower}}
             </p>
         </div>
 
@@ -35,7 +35,7 @@
                 Starting power:
             </p>
             <p class="Value">
-                {{startingPower}}
+                {{heroDTO.startingPower}}
             </p>
         </div>
 
@@ -44,7 +44,7 @@
                 Ability:
             </p>
             <p class="Value">
-                {{ability}}
+                {{heroDTO.ability}}
             </p>
         </div>
 
@@ -53,7 +53,7 @@
             Joined at:
         </p>
         <p class="Value">
-            {{joinedAt}}
+            {{heroDTO.startedAt}}
         </p>
     </div>
     <div class="ContentContainer Invisible">
@@ -62,10 +62,12 @@
             Suit color:
         </p>
         <p class="Value">
-            {{suitColor}}
+            {{heroDTO.suitColors}}
         </p>
     </div>
-    <button class="AnimatedButton InvisibleButton">
+    <button [disabled]="!heroDTO.trainable" class="AnimatedButton InvisibleButton"
+            (click)="onHeroTrained()"    
+    >
         Train!
     </button>
 

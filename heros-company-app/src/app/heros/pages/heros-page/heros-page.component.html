@@ -1,14 +1,9 @@
 <app-scroll-view>
     <div class="CardsContainer">
     <p class="Warning"> Heros data is private</p>
-
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
-        <app-card></app-card>
+        <app-card *ngFor="let hero of (herosList|async)"
+        [heroDTO]="hero"
+        ></app-card>
+        
     </div>
 </app-scroll-view>

@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { HerosDataService } from 'src/app/core/services/heros-data.service';
+import { HeroDTO } from 'src/app/models/HeroDTO.model';
 
 @Component({
   selector: 'app-card',
@@ -6,18 +8,20 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./card.component.css']
 })
 export class CardComponent implements OnInit {
-
-    @Input() id = '3F2504E0-4F89-11D3-9A0C-0305E82C3301';
-    @Input() name = 'test';
-    @Input() currentPower = '340';
-    @Input() startingPower = '100';
-    @Input() ability = 'fire';
-    @Input() joinedAt = 'yesterday';
-    @Input() suitColor = 'orange-red';
-
-  constructor() { }
+    @Input() heroDTO! : HeroDTO ;
+  constructor(private herosService : HerosDataService) { }
 
   ngOnInit(): void {
   }
 
+  async onHeroTrained(){
+      let token = localStorage.getItem('token');
+      if(token != null)
+      {
+          let newData = await this.herosService.TrainHero(this.heroDTO.heroId,token)
+          
+          this.heroDTO.currentPower = newData.currentPower;
+          this.heroDTO.trainable = newData.trainable;
+      }
+  }
 }

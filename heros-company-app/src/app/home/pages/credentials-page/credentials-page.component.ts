@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,12 +34,38 @@ export class CredentialsPageComponent implements OnInit {
             ])
         })
     }
-    Submit(){
+    async Submit() {
+        
         const urlSnapshot = this.route.snapshot.url;
-        if(urlSnapshot[urlSnapshot.length-1].path === 'sign-up')
-        {
-            this.credentials.Register(this.credentialsForm.value.username,this.credentialsForm.value.password);
+
+        if (urlSnapshot[urlSnapshot.length - 1].path === 'sign-up') {
+            let response = await this.credentials.Register(this.credentialsForm.value.username, this.credentialsForm.value.password);
+            if (response instanceof HttpErrorResponse) {
+                alert(response.error)
+            }
+            else {
+                if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
+                    localStorage.setItem('token', response.authorization);
+                    localStorage.setItem('trainerId', response.trainerId);
+                    localStorage.setItem('trainerUserName', response.trainerUserName);
+                    this.router.navigate(['heros']);
+                }
+            }
+        }
+        if (urlSnapshot[urlSnapshot.length - 1].path === 'sign-in') {
+            let response = await this.credentials.LogIn(this.credentialsForm.value.username, this.credentialsForm.value.password);
+            if (response instanceof HttpErrorResponse) {
+                alert(response.error)
+            }
+            else {
+                if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
+                    localStorage.setItem('token', response.authorization);
+                    localStorage.setItem('trainerId', response.trainerId);
+                    localStorage.setItem('trainerUserName', response.trainerUserName);
+                    this.router.navigate(['heros']);
+                }
+            }
+
         }
     }
-
 }

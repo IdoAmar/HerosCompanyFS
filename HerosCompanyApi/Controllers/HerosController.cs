@@ -40,8 +40,8 @@ namespace HerosCompanyApi.Controllers
 
             if (!herosList.Any())
                 return NotFound();
-
-            var herosDTOList = herosList.Select(h => ToHeroDTO(h, h.Trainers.Select(t => TrainerToDTO(t)).Contains(askingTrainer)));
+            
+            var herosDTOList = herosList.Select(h => ToHeroDTO(h, IsHeroTrainable(h, askingTrainer)));
 
             return Ok(herosDTOList);
         }
@@ -84,7 +84,6 @@ namespace HerosCompanyApi.Controllers
         public async Task<ActionResult<HeroDTO>> TrainHero(Guid id)
         {
             Hero heroToTrain = _dbContext.Heroes.Include(h => h.Trainers).Where(h => h.HeroId == id).FirstOrDefault();
-            var test = _dbContext.Heroes.FirstOrDefault(s => s.HeroId == id);
 
             TrainerDTO askingTrainer = _tokenGenerator.ReadToken(HttpContext.User);
 
@@ -133,7 +132,10 @@ namespace HerosCompanyApi.Controllers
             heroToTrain.LastTimeTrainingAmount += 1;
             heroToTrain.CurrentPower += HeroPowerGained();
             await _dbContext.SaveChangesAsync();
-            return Ok(ToHeroDTO(heroToTrain,true));
+
+            var heroDTO = ToHeroDTO(heroToTrain, heroToTrain.LastTimeTrainingAmount == 5 ? false : true);
+
+            return Ok(heroDTO);
         }
 
        
@@ -156,10 +158,26 @@ namespace HerosCompanyApi.Controllers
             return rng.NextDouble() / 10;
         }
 
-        private TrainerDTO TrainerToDTO(Trainer trainer)
+        private static TrainerDTO TrainerToDTO(Trainer trainer)
         {
 
             return new TrainerDTO(trainer.TrainerId, trainer.TrainerUserName);
+        }
+        private static bool IsHeroTrainable(Hero hero,TrainerDTO askingTrainer)
+        {
+            if(!hero.Trainers.Select(t => TrainerToDTO(t)).Contains(askingTrainer))
+            {
+                return false;
+            }
+            if(hero.LastTimeTrainingAmount >= 5)
+            {
+                if((DateTime.Now - hero.LastTimeTrained).Value.TotalDays > 1)
+                {
+                    return true;
+                }
+                return false;
+            }
+            return true;
         }
     }
 }

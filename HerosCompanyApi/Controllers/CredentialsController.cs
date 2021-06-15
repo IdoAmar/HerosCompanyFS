@@ -33,7 +33,7 @@ namespace HerosCompanyApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                BadRequest();
+               return BadRequest("Please enter username and password with one number capital letter and special character");
             }
 
             Trainer existingTrainer =  _dbContext.Trainers.Where(t => t.TrainerUserName == registerRequest.TrainerUserName)
@@ -41,7 +41,7 @@ namespace HerosCompanyApi.Controllers
 
             if (existingTrainer is not null)
             {
-                return Conflict();
+                return Conflict("User name already exists");
             }
 
             var PasswordAndSalt = _hasherService.HashPassword(registerRequest.Password);
