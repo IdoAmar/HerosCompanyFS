@@ -10,7 +10,12 @@ using HerosCompanyApi.Models;
 using HerosCompanyApi.Services.TokenGenerators;
 using Microsoft.EntityFrameworkCore;
 using HerosCompanyApi.Services.Encrypters;
+using HerosCompanyApi.Middlewares;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace HerosCompanyApi
 {
@@ -40,6 +45,8 @@ namespace HerosCompanyApi
             AuthenticationConfigurations authenticationConfigurations = new AuthenticationConfigurations();
             _configuration.Bind("Authentication", authenticationConfigurations);
 
+            services.AddSingleton<Logger>(LogManager.GetLogger("HerosCompanyLoggerRule"));
+
             services.AddSingleton<AuthenticationConfigurations>(authenticationConfigurations);
 
             services.AddSingleton<AccessTokenGenerator>();
@@ -64,6 +71,8 @@ namespace HerosCompanyApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseLoggerMiddleware();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,6 +84,8 @@ namespace HerosCompanyApi
                 .AllowAnyHeader()
                 .WithExposedHeaders("Authorization"));
             //app.UseHttpsRedirection();
+
+            app.UseExceptionHandler("/error");
 
             app.UseRouting();
 

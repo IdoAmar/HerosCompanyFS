@@ -28,8 +28,8 @@ namespace HerosCompanyApi.Services.Encrypters
         {
             using(var rfc = new Rfc2898DeriveBytes(passwordToVerify, salt, 10000, HashAlgorithmName.SHA256))
             {
-                var hashedPasswordToVerify = rfc.GetBytes(128);
-                if (hashedPasswordToVerify == hashedPassword)
+                var hashedPasswordToVerify = rfc.GetBytes(64);
+                if (hashedPasswordToVerify.SequenceEqual(hashedPassword))
                     return true;
                 return false;
             }

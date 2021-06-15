@@ -32,8 +32,7 @@ export class HerosDataService {
                     alert("Please relog in");
                     return [];
                 }
-                console.log(e);
-                alert(e.message);
+                alert(e.error.detail);
                 return [];
             }),
             map(l => l.sort((h1, h2) => h2.currentPower - h1.currentPower))
@@ -59,7 +58,7 @@ export class HerosDataService {
                 alert("Please relog in");
                 return [];
             }
-            alert(e.message);
+            alert(e.error.detail);
             return [];
         })
         ).toPromise();

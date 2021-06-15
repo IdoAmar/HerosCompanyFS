@@ -9,6 +9,7 @@ using HerosCompanyApi.Services.TokenGenerators;
 using HerosCompanyApi.Services.Encrypters;
 using HerosCompanyApi.Models.DTOs;
 using Microsoft.AspNetCore.Cors;
+using ServiceStack.Host;
 
 namespace HerosCompanyApi.Controllers
 {
@@ -33,7 +34,8 @@ namespace HerosCompanyApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-               return BadRequest("Please enter username and password with one number capital letter and special character");
+                throw new HttpException((int)System.Net.HttpStatusCode.BadRequest,
+                    "Please enter username and password with one number capital letter and special character");
             }
 
             Trainer existingTrainer =  _dbContext.Trainers.Where(t => t.TrainerUserName == registerRequest.TrainerUserName)
@@ -41,7 +43,7 @@ namespace HerosCompanyApi.Controllers
 
             if (existingTrainer is not null)
             {
-                return Conflict("User name already exists");
+                throw new HttpException((int)System.Net.HttpStatusCode.Conflict, "User name already exists");
             }
 
             var PasswordAndSalt = _hasherService.HashPassword(registerRequest.Password);
@@ -70,20 +72,20 @@ namespace HerosCompanyApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                throw new HttpException((int)System.Net.HttpStatusCode.BadRequest, "Form is invalid");
             }
 
             var existingTrainer = _dbContext.Trainers.Where(t => t.TrainerUserName == logInRequest.TrainerUserName).FirstOrDefault();
 
             if (existingTrainer is null)
             {
-                return Unauthorized();
+                throw new HttpException((int)System.Net.HttpStatusCode.Unauthorized, "User is unauthorized");
             }
 
 
-            if (_hasherService.VerifyPassword(logInRequest.Password, existingTrainer.Salt, existingTrainer.Password))
+            if (!_hasherService.VerifyPassword(logInRequest.Password, existingTrainer.Salt, existingTrainer.Password))
             {
-                return Unauthorized();
+                throw new HttpException((int)System.Net.HttpStatusCode.Unauthorized,"User is unauthorized");
             }
 
             var trainerDTO = TrainerToDTO(existingTrainer);

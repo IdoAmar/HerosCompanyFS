@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ServiceStack.Host;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -39,8 +41,9 @@ namespace HerosCompanyApi.Controllers
                 .ToListAsync();
 
             if (!herosList.Any())
-                return NotFound();
-            
+            {
+                throw new HttpException((int)System.Net.HttpStatusCode.NotFound, "There are no heros available");
+            }
             var herosDTOList = herosList.Select(h => ToHeroDTO(h, IsHeroTrainable(h, askingTrainer)));
 
             return Ok(herosDTOList);
@@ -90,7 +93,7 @@ namespace HerosCompanyApi.Controllers
             //if hero doesnt exist
             if (heroToTrain is null)
             {
-                return BadRequest();
+                throw new HttpException((int)System.Net.HttpStatusCode.BadRequest, "This hero does not exist");
             }
 
             var isTrainableByAskingTrainer = heroToTrain.Trainers.Where(t => t.TrainerId == askingTrainer.TrainerId)
@@ -98,7 +101,7 @@ namespace HerosCompanyApi.Controllers
             //if trainer is not allowed to train the hero
             if (isTrainableByAskingTrainer is null)
             {
-                return Forbid();
+                throw new HttpException((int)System.Net.HttpStatusCode.Forbidden, "This trainer is not allowed to train this hero");
             }
 
 
@@ -125,7 +128,8 @@ namespace HerosCompanyApi.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    throw new HttpException((int)System.Net.HttpStatusCode.Forbidden, "Hero is exhausted, try again tommrow");
+
                 }
             }
 

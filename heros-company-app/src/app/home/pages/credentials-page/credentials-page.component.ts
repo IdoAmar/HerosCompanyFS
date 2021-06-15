@@ -35,13 +35,13 @@ export class CredentialsPageComponent implements OnInit {
         })
     }
     async Submit() {
-        
+
         const urlSnapshot = this.route.snapshot.url;
 
         if (urlSnapshot[urlSnapshot.length - 1].path === 'sign-up') {
             let response = await this.credentials.Register(this.credentialsForm.value.username, this.credentialsForm.value.password);
             if (response instanceof HttpErrorResponse) {
-                alert(response.error)
+                alert(response.error.detail);
             }
             else {
                 if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
@@ -53,7 +53,10 @@ export class CredentialsPageComponent implements OnInit {
         if (urlSnapshot[urlSnapshot.length - 1].path === 'sign-in') {
             let response = await this.credentials.LogIn(this.credentialsForm.value.username, this.credentialsForm.value.password);
             if (response instanceof HttpErrorResponse) {
-                alert(response.error)
+                console.log(response); 
+                alert(response.error.detail);
+
+
             }
             else {
                 if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
