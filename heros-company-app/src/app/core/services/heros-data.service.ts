@@ -11,37 +11,45 @@ import { Router } from '@angular/router';
     providedIn: CoreModule
 })
 export class HerosDataService {
+
     private HerosDataBaseUrl: string = environment.apiBaseUrl + "/heros";
+
     constructor(
         private http: HttpClient,
-        private router:Router) { }
+        private router: Router) { }
+
+    //get all heros request
     GetHeros(token: string): Promise<HeroDTO[]> {
+
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': token
         }
+
         return this.http.get<HeroDTO[]>(this.HerosDataBaseUrl,
             {
                 headers,
             }
-        ).pipe(
-            catchError((e: HttpErrorResponse) => {
-                if (e.status === 401) {
-                    localStorage.removeItem('token');
-                    this.router.navigate([''])
-                    alert("Please relog in");
+            ).pipe(
+                catchError((e: HttpErrorResponse) => {
+                    //catch error in response
+                    if (e.status === 401) {
+                        localStorage.removeItem('token');
+                        this.router.navigate([''])
+                        alert("Please relog in");
+                        return [];
+                    }
+                    alert(e.error.detail);
                     return [];
-                }
-                alert(e.error.detail);
-                return [];
-            }),
-            map(l => l.sort((h1, h2) => h2.currentPower - h1.currentPower))
-        )
-            .toPromise();
+                }),
+                //sort heros by power
+                map(l => l.sort((h1, h2) => h2.currentPower - h1.currentPower))
+            ).toPromise();
     }
 
-
+    //train heros request
     TrainHero(heroID: string, token: string): Promise<HeroDTO> {
+
         const headers = {
             'Authorization': token,
         }
@@ -51,16 +59,17 @@ export class HerosDataService {
             {
                 headers,
             }
-        ).pipe(catchError((e: HttpErrorResponse) => {
-            if (e.status === 401) {
-                localStorage.removeItem('token');
-                this.router.navigate([''])
-                alert("Please relog in");
+            ).pipe(catchError((e: HttpErrorResponse) => {
+                //catch error in response
+                if (e.status === 401) {
+                    localStorage.removeItem('token');
+                    this.router.navigate([''])
+                    alert("Please relog in");
+                    return [];
+                }
+                alert(e.error.detail);
                 return [];
-            }
-            alert(e.error.detail);
-            return [];
-        })
-        ).toPromise();
+            })
+            ).toPromise();
     }
 }

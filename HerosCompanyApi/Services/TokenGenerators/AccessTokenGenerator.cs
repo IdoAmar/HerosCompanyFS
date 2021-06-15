@@ -10,6 +10,7 @@ using System.Text;
 
 namespace HerosCompanyApi.Services.TokenGenerators
 {
+
     public class AccessTokenGenerator
     {
         private readonly AuthenticationConfigurations _configurations;
@@ -21,14 +22,18 @@ namespace HerosCompanyApi.Services.TokenGenerators
 
         public string GenerateToken(TrainerDTO trainer)
         {
+            //get security key from configuration file
             SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configurations.AccessTokenSecret));
             SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            //adding claims to the token
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("id", trainer.TrainerId.ToString()),
                 new Claim(ClaimTypes.Name, trainer.TrainerUserName)
             };
+
+            //creating the token
             JwtSecurityToken token = new JwtSecurityToken(
                 _configurations.Issuer,
                 _configurations.Audience,
@@ -41,6 +46,7 @@ namespace HerosCompanyApi.Services.TokenGenerators
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        //read token info
         public TrainerDTO ReadToken(ClaimsPrincipal principal)
         {
             Guid id = Guid.Parse(principal.Claims.Where(c => c.Type == "id")

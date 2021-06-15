@@ -34,6 +34,8 @@ namespace HerosCompanyApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            //adding database connection service
             services.AddDbContext<HerosCompanyDBContext>(o =>
             {
                 string connectionString = _configuration.GetConnectionString(_connectionStringName);
@@ -41,17 +43,21 @@ namespace HerosCompanyApi
             });
 
 
-
+            //load configurations from config file
             AuthenticationConfigurations authenticationConfigurations = new AuthenticationConfigurations();
             _configuration.Bind("Authentication", authenticationConfigurations);
 
+
+            //adding app singletons
             services.AddSingleton<Logger>(LogManager.GetLogger("HerosCompanyLoggerRule"));
 
             services.AddSingleton<AuthenticationConfigurations>(authenticationConfigurations);
 
             services.AddSingleton<AccessTokenGenerator>();
+
             services.AddSingleton<IPasswordHasherService, RFCSHAPasswordHasherService>();
 
+            //adding authentication by jwt bearer token
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
             {
 
@@ -83,6 +89,7 @@ namespace HerosCompanyApi
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("Authorization"));
+
             //app.UseHttpsRedirection();
 
             app.UseExceptionHandler("/error");

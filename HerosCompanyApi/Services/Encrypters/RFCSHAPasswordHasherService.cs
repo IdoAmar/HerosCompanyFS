@@ -10,14 +10,15 @@ namespace HerosCompanyApi.Services.Encrypters
     {
         public (byte[] hashedPassword, byte[] salt) HashPassword(string password)
         {
-
+            //creating the salt
             byte[] salt = new byte[512 / 8];
             byte[] hashedPassword;
             using (var rng = new RNGCryptoServiceProvider())
             {
                 rng.GetBytes(salt);
             }
-            using(var rfc = new Rfc2898DeriveBytes(password,salt,10000,HashAlgorithmName.SHA256))
+            //using RFC with SHA256 to encrypt the password with the random salt
+            using (var rfc = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256))
             {
                 hashedPassword = rfc.GetBytes(64);
             }
@@ -26,7 +27,7 @@ namespace HerosCompanyApi.Services.Encrypters
 
         public bool VerifyPassword(string passwordToVerify, byte[] salt, byte[] hashedPassword)
         {
-            using(var rfc = new Rfc2898DeriveBytes(passwordToVerify, salt, 10000, HashAlgorithmName.SHA256))
+            using (var rfc = new Rfc2898DeriveBytes(passwordToVerify, salt, 10000, HashAlgorithmName.SHA256))
             {
                 var hashedPasswordToVerify = rfc.GetBytes(64);
                 if (hashedPasswordToVerify.SequenceEqual(hashedPassword))

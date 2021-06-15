@@ -20,6 +20,7 @@ namespace HerosCompanyApi.Models
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            //applying the models configurations to the database
             builder.ApplyConfigurationsFromAssembly(typeof(Trainer).Assembly);
             builder.ApplyConfigurationsFromAssembly(typeof(Hero).Assembly);
         }

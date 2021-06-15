@@ -15,16 +15,17 @@ namespace HerosCompanyApi.Controllers
     {
         private readonly Logger _logger;
 
-        //private Logger logger = LogManager.GetLogger("HerosCompanyLoggerRule");
         public ErrorController(Logger logger)
         {
             _logger = logger;
         }
+        //controller to handle errors from exception handling middleware
         [Route("/error")]
         public IActionResult Error()
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            if(context.Error is HttpException)
+            //handling custom exceptions
+            if (context.Error is HttpException)
             {
                 HttpException httpError = (HttpException)context.Error;
 
@@ -35,7 +36,7 @@ namespace HerosCompanyApi.Controllers
                     detail: httpError.StatusDescription,
                     statusCode: httpError.StatusCode
                     );
-            }    
+            }
             return Problem(
                 detail: context.Error.StackTrace,
                 title: context.Error.Message,

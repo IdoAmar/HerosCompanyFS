@@ -13,7 +13,7 @@ using ServiceStack.Host;
 
 namespace HerosCompanyApi.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class CredentialsController : ControllerBase
@@ -22,12 +22,13 @@ namespace HerosCompanyApi.Controllers
         private readonly AccessTokenGenerator _accessTokenGenerator;
         private readonly IPasswordHasherService _hasherService;
 
-        public CredentialsController( AccessTokenGenerator accessTokenGenerator, HerosCompanyDBContext dBContext, IPasswordHasherService hasherService)
+        public CredentialsController(AccessTokenGenerator accessTokenGenerator, HerosCompanyDBContext dBContext, IPasswordHasherService hasherService)
         {
             _dbContext = dBContext;
             _accessTokenGenerator = accessTokenGenerator;
             _hasherService = hasherService;
         }
+        //handle register request
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
@@ -38,7 +39,7 @@ namespace HerosCompanyApi.Controllers
                     "Please enter username and password with one number capital letter and special character");
             }
 
-            Trainer existingTrainer =  _dbContext.Trainers.Where(t => t.TrainerUserName == registerRequest.TrainerUserName)
+            Trainer existingTrainer = _dbContext.Trainers.Where(t => t.TrainerUserName == registerRequest.TrainerUserName)
                                                           .FirstOrDefault();
 
             if (existingTrainer is not null)
@@ -55,17 +56,18 @@ namespace HerosCompanyApi.Controllers
                 Salt = PasswordAndSalt.salt
             };
 
-            var entry =_dbContext.Trainers.Add(newTrainer);
+            var entry = _dbContext.Trainers.Add(newTrainer);
             await _dbContext.SaveChangesAsync();
 
             var trainerDTO = TrainerToDTO(newTrainer);
 
+            // generate token upon successfull request and send it in the header
             string token = _accessTokenGenerator.GenerateToken(trainerDTO);
             HttpContext.Response.Headers.Add("Authorization", "Bearer " + token);
 
             return Ok(trainerDTO);
         }
-
+        //handle login request
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LogIn([FromBody] LogInRequest logInRequest)
@@ -85,11 +87,12 @@ namespace HerosCompanyApi.Controllers
 
             if (!_hasherService.VerifyPassword(logInRequest.Password, existingTrainer.Salt, existingTrainer.Password))
             {
-                throw new HttpException((int)System.Net.HttpStatusCode.Unauthorized,"User is unauthorized");
+                throw new HttpException((int)System.Net.HttpStatusCode.Unauthorized, "User is unauthorized");
             }
 
             var trainerDTO = TrainerToDTO(existingTrainer);
 
+            // generate token upon successfull request and send it in the header
             string token = _accessTokenGenerator.GenerateToken(trainerDTO);
             HttpContext.Response.Headers.Add("Authorization", "Bearer " + token);
 
@@ -98,7 +101,7 @@ namespace HerosCompanyApi.Controllers
 
         private TrainerDTO TrainerToDTO(Trainer trainer)
         {
-          
+
             return new TrainerDTO(trainer.TrainerId, trainer.TrainerUserName);
         }
     }

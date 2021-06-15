@@ -31,6 +31,7 @@ namespace HerosCompanyApi.Controllers
             _tokenGenerator = tokenGenerator;
         }
 
+        //controller to handle get all heros request
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HeroDTO>>> GetHeros()
         {
@@ -44,11 +45,13 @@ namespace HerosCompanyApi.Controllers
             {
                 throw new HttpException((int)System.Net.HttpStatusCode.NotFound, "There are no heros available");
             }
+            //attaching is trainable property to the heros
             var herosDTOList = herosList.Select(h => ToHeroDTO(h, IsHeroTrainable(h, askingTrainer)));
 
             return Ok(herosDTOList);
         }
 
+        //controller to handle create hero
         [HttpPost]
         public async Task<ActionResult<Hero>> CreateHero([FromBody] CreateHeroRequest createRequest)
         {
@@ -76,13 +79,14 @@ namespace HerosCompanyApi.Controllers
                 trainer.Heros.Add(heroToAdd);
             }
 
-         
+
 
             await _dbContext.SaveChangesAsync();
 
             return Created(nameof(GetHeros), ToHeroDTO(heroToAdd));
         }
 
+        // controller to handle train hero by id
         [HttpPatch("train/{id}")]
         public async Task<ActionResult<HeroDTO>> TrainHero(Guid id)
         {
@@ -112,19 +116,19 @@ namespace HerosCompanyApi.Controllers
                 heroToTrain.LastTimeTrainingAmount += 1;
                 heroToTrain.CurrentPower += HeroPowerGained();
                 await _dbContext.SaveChangesAsync();
-                return Ok(ToHeroDTO(heroToTrain,true));
+                return Ok(ToHeroDTO(heroToTrain, true));
             }
 
             if (heroToTrain.LastTimeTrainingAmount >= 5)
             {
-                //check if a day passed since lastTimeTrained
+                //check if a day passed since lastTimeTrained to reset the training amount
                 if ((DateTime.Now - heroToTrain.LastTimeTrained).Value.TotalDays > 1)
                 {
                     heroToTrain.LastTimeTrained = DateTime.Now;
                     heroToTrain.LastTimeTrainingAmount = 1;
                     heroToTrain.CurrentPower += HeroPowerGained();
                     await _dbContext.SaveChangesAsync();
-                    return Ok(ToHeroDTO(heroToTrain,true));
+                    return Ok(ToHeroDTO(heroToTrain, true));
                 }
                 else
                 {
@@ -132,7 +136,7 @@ namespace HerosCompanyApi.Controllers
 
                 }
             }
-
+            //if hero is trainable
             heroToTrain.LastTimeTrainingAmount += 1;
             heroToTrain.CurrentPower += HeroPowerGained();
             await _dbContext.SaveChangesAsync();
@@ -142,7 +146,7 @@ namespace HerosCompanyApi.Controllers
             return Ok(heroDTO);
         }
 
-       
+
 
         private static HeroDTO ToHeroDTO(Hero hero, bool trainable = false)
         {
@@ -167,15 +171,17 @@ namespace HerosCompanyApi.Controllers
 
             return new TrainerDTO(trainer.TrainerId, trainer.TrainerUserName);
         }
-        private static bool IsHeroTrainable(Hero hero,TrainerDTO askingTrainer)
+
+        // method to check if hero is trainable by a trainer
+        private static bool IsHeroTrainable(Hero hero, TrainerDTO askingTrainer)
         {
-            if(!hero.Trainers.Select(t => TrainerToDTO(t)).Contains(askingTrainer))
+            if (!hero.Trainers.Select(t => TrainerToDTO(t)).Contains(askingTrainer))
             {
                 return false;
             }
-            if(hero.LastTimeTrainingAmount >= 5)
+            if (hero.LastTimeTrainingAmount >= 5)
             {
-                if((DateTime.Now - hero.LastTimeTrained).Value.TotalDays > 1)
+                if ((DateTime.Now - hero.LastTimeTrained).Value.TotalDays > 1)
                 {
                     return true;
                 }

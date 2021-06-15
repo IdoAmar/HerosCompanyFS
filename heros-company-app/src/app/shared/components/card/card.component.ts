@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { HerosDataService } from 'src/app/core/services/heros-data.service';
 import { HeroDTO } from 'src/app/models/HeroDTO.model';
 
@@ -9,7 +10,10 @@ import { HeroDTO } from 'src/app/models/HeroDTO.model';
 })
 export class CardComponent implements OnInit {
     @Input() heroDTO! : HeroDTO ;
-  constructor(private herosService : HerosDataService) { }
+  constructor(
+      private herosService : HerosDataService,
+      private router: Router
+      ) { }
 
   ngOnInit(): void {
   }
@@ -22,6 +26,10 @@ export class CardComponent implements OnInit {
           
           this.heroDTO.currentPower = newData.currentPower;
           this.heroDTO.trainable = newData.trainable;
+      }
+      else{
+          alert("please relog");
+          this.router.navigate(['']);
       }
   }
 }
