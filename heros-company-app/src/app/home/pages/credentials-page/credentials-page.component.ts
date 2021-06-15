@@ -46,8 +46,6 @@ export class CredentialsPageComponent implements OnInit {
             else {
                 if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
                     localStorage.setItem('token', response.authorization);
-                    localStorage.setItem('trainerId', response.trainerId);
-                    localStorage.setItem('trainerUserName', response.trainerUserName);
                     this.router.navigate(['heros']);
                 }
             }
@@ -60,8 +58,6 @@ export class CredentialsPageComponent implements OnInit {
             else {
                 if (response.authorization !== null && response.trainerId !== undefined && response.trainerUserName !== undefined) {
                     localStorage.setItem('token', response.authorization);
-                    localStorage.setItem('trainerId', response.trainerId);
-                    localStorage.setItem('trainerUserName', response.trainerUserName);
                     this.router.navigate(['heros']);
                 }
             }

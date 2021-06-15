@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { HerosDataService } from 'src/app/core/services/heros-data.service';
 import { HeroDTO } from 'src/app/models/HeroDTO.model';

@@ -35,9 +35,7 @@ export class CredentialsService {
                         }
                         return logInResponse;
                 }),
-            ).toPromise().catch((e:HttpErrorResponse)=> {
-                return e;
-            });
+            ).toPromise().catch((e:HttpErrorResponse)=> e);
 
     }
 
